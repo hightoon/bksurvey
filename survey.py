@@ -20,6 +20,7 @@ class Survey(object):
         self.action = None
         self.ques_num = 0
         self.done = False
+        self.proxy = 'http://webproxy.corp.booking.com:3128'
     
     def setup_session(self):
         if self.session is None:
@@ -93,8 +94,8 @@ if __name__ == '__main__':
     try:
         q.setup_session()
         q.submit_cn()
-    except:
-        print 'invalid survey code'
+    except Exception as e:
+        print 'invalid survey code', e
         raise SystemExit
     for i in range(28):
         q.submit_data()
