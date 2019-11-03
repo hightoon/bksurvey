@@ -20,6 +20,7 @@ class Survey(object):
         self.action = None
         self.ques_num = 0
         self.done = False
+        self.resptext = 'na'
         self.proxy = 'http://webproxy.corp.booking.com:3128'
     
     def setup_session(self):
@@ -30,8 +31,8 @@ class Survey(object):
             dataform = filter(lambda x: x['action'].startswith('Index'), soup.find_all('form'))[0]
             accept_cookie = {'JavaScriptEnabled': '1', 'FIP': 'True', 'AcceptCookies': 'Y', 'NextButton': '继续'}
             res = self.session.post(self._base_url+dataform['action'], accept_cookie)
-            print res.url
-            print res.text
+            #print res.url
+            #print res.text
             soup = BeautifulSoup(res.text, 'html.parser')
             self.action = filter(lambda x: x['id'] == 'surveyEntryForm', soup.find_all('form'))[0]['action']
 
@@ -76,6 +77,7 @@ class Survey(object):
             for p in soup.find_all('p'):
                 if p.attrs.has_key('class'):
                     print p.text
+                    self.resptext = p.text
                     self.done = True
         else:
             postednfs = filter(lambda x: x['id'] == 'PostedFNS', soup.find_all('input'))[0]['value']
