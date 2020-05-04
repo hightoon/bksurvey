@@ -21,7 +21,6 @@ class Survey(object):
         self.ques_num = 0
         self.done = False
         self.resptext = 'na'
-        self.proxy = 'http://webproxy.corp.booking.com:3128'
     
     def setup_session(self):
         if self.session is None:
