@@ -20,6 +20,7 @@ class Survey(object):
         self.action = None
         self.ques_num = 0
         self.done = False
+        self.resptext = 'na'
     
     def setup_session(self):
         if self.session is None:
@@ -74,6 +75,7 @@ class Survey(object):
             for p in soup.find_all('p'):
                 if p.attrs.has_key('class'):
                     print (p.text)
+                    self.resptext = p.text
                     self.done = True
         else:
             postednfs = filter(lambda x: x['id'] == 'PostedFNS', soup.find_all('input'))[0]['value']
@@ -94,8 +96,8 @@ if __name__ == '__main__':
     try:
         q.setup_session()
         q.submit_cn()
-    except:
-        print ('invalid survey code')
+    except Exception as e:
+        print ('invalid survey code', e)
         raise SystemExit
     for i in range(28):
         q.submit_data()
