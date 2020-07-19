@@ -29,14 +29,14 @@ class Survey(object):
             dataform = filter(lambda x: x['action'].startswith('Index'), soup.find_all('form'))[0]
             accept_cookie = {'JavaScriptEnabled': '1', 'FIP': 'True', 'AcceptCookies': 'Y', 'NextButton': '继续'}
             res = self.session.post(self._base_url+dataform['action'], accept_cookie)
-            print res.url
-            print res.text
+            print (res.url)
+            print (res.text)
             soup = BeautifulSoup(res.text, 'html.parser')
             self.action = filter(lambda x: x['id'] == 'surveyEntryForm', soup.find_all('form'))[0]['action']
 
     def submit_cn(self):
         if self.session is None:
-            print 'no session found'
+            print ('no session found')
             return
         postdata = {'JavaScriptEnabled': '1', 'FIP': 'True', 'AcceptCookies': 'Y', 'NextButton': '继续',
                     'CN1': self.cn1, 'CN2': self.cn2,
@@ -45,7 +45,6 @@ class Survey(object):
                     'NextButton': 'Start'
         }
         res = self.session.post(self._base_url+self.action, postdata)
-        print res.text
         soup = BeautifulSoup(res.text, 'html.parser')
         self.action = filter(lambda x: x['id'] == 'surveyForm', soup.find_all('form'))[0]['action'] # surveyForm
         #manipulate first form data for post
@@ -60,21 +59,21 @@ class Survey(object):
 
     def submit_data(self):
         if self.session is None:
-            print 'no session found'
+            print ('no session found')
             return
-        print self.postdata
+        #print self.postdata
         res = self.session.post(self._base_url+self.action, self.postdata)
-        print res.text
+        print (res.text)
         # manipulate data for next POST
         soup = BeautifulSoup(res.text, 'html.parser')
         try:
             self.action = filter(lambda x: x['id'] == 'surveyForm', soup.find_all('form'))[0]['action']
         except:
             # <p class="ValCode">验证代码：18101822</p>
-            print 'Survey done, pls record your verification code'
+            print ('Survey done, pls record your verification code')
             for p in soup.find_all('p'):
                 if p.attrs.has_key('class'):
-                    print p.text
+                    print (p.text)
                     self.done = True
         else:
             postednfs = filter(lambda x: x['id'] == 'PostedFNS', soup.find_all('input'))[0]['value']
@@ -89,12 +88,14 @@ class Survey(object):
 
 if __name__ == '__main__':
     sc = raw_input('survey code:')
+    #sc = input('survey code:')
+    print ('sc: ' + sc)
     q = Survey('https://tellburgerking.com.cn/', sc)
     try:
         q.setup_session()
         q.submit_cn()
     except:
-        print 'invalid survey code'
+        print ('invalid survey code')
         raise SystemExit
     for i in range(28):
         q.submit_data()
